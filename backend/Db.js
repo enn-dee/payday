@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
- class DB {
+class DB {
   constructor() {
     DB.connectToDb();
   }
   static async connectToDb() {
     try {
-      const dbUrl =process.env.DB_URL;
+      const dbUrl = process.env.DB_URL;
       await mongoose
         .connect(dbUrl)
         .then(() => {
@@ -21,4 +21,3 @@ const mongoose = require("mongoose");
 }
 
 module.exports = DB;
-

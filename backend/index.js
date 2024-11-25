@@ -14,6 +14,5 @@ app.use("/api/v1", router);
 
 app.listen(3000, async () => {
   const db = new DB();
-
   console.log("Server is running on port 3000");
 });

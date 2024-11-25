@@ -3,7 +3,6 @@ const { z } = require("zod");
 const User = require("../models/User.model");
 const bcrypt = require("bcrypt");
 
-const JWT_SECRET = process.env.JWT_SECRET ; 
 
 const UserSchema = z.object({
   username: z.string(),
@@ -13,14 +12,18 @@ const UserSchema = z.object({
 const authenticate = async (req, res, next) => {
   try {
    
-    const token = req.headers.authorization;
-    if (!token || !token.startsWith("Bearer ")) {
-      return res.status(401).json({ message: "Unauthorized" });
+    // const token = req.headers.authorization;
+    // if (!token || !token.startsWith("Bearer ")) {
+    //   return res.status(401).json({ message: "Unauthorized" });
+    // }
+
+    // const trimToken = token.split(" ")[1];
+    const refreshToken = req.cookies?.refreshToken || req.header("Authorization")?.replace("Bearer ", "");
+    if(!refreshToken){
+      return res.json({msg:"token not provided"})
     }
-
-    const trimToken = token.split(" ")[1];
-
-    const decoded = jwt.verify(trimToken, JWT_SECRET);
+    console.log("access token" , refreshToken);
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     if (!decoded) {
       return res.status(401).json({ message: "Unauthorized" });
     }
