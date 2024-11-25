@@ -1,3 +1,8 @@
+/*
+
+Refresh tokens are meant to obtain new access tokens. They are not designed to authenticate API requests directly.
+*/
+
 const jwt = require("jsonwebtoken");
 const User = require("../models/User.model");
 

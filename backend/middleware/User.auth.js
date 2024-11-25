@@ -1,57 +1,54 @@
 const jwt = require("jsonwebtoken");
-const { z } = require("zod");
-const User = require("../models/User.model");
-const bcrypt = require("bcrypt");
+const { z, string } = require("zod");
 
+const authenticateTokens = (req, res, next) => {
+  try {
+    const token = req.header("Authorization")?.replace("Bearer ", "");
+    if (!token) {
+      return res.status(401).json({ message: "Access token not provided" });
+    }
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    console.error("Authentication Error:", err);
+    return res.status(403).json({ message: "Invalid or expired access token" });
+  }
+};
 
-const UserSchema = z.object({
+// check for username , password
+const userSchema = z.object({
   username: z.string(),
   password: z.string(),
 });
 
-const authenticate = async (req, res, next) => {
-  try {
-   
-    // const token = req.headers.authorization;
-    // if (!token || !token.startsWith("Bearer ")) {
-    //   return res.status(401).json({ message: "Unauthorized" });
-    // }
+// const authenticateCredentials = async (req, res, next) => {
+//   try {
+//     const user = req.user;
+//     const validation = userSchema.safeParse(user);
+//     if (!validation) {
+//       return res
+//         .status(400)
+//         .json({ message: "Invalid inputs", errors: validation.error.erros });
+//     }
+//     const { username, password } = validation?.data;
+//     const isUser = await User.findOne({ username });
+//     if (!isUser) {
+//       return res.status(401).json({ message: "Unauthorized" });
+//     }
 
-    // const trimToken = token.split(" ")[1];
-    const refreshToken = req.cookies?.refreshToken || req.header("Authorization")?.replace("Bearer ", "");
-    if(!refreshToken){
-      return res.json({msg:"token not provided"})
-    }
-    console.log("access token" , refreshToken);
-    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-    if (!decoded) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
+//     const isPasswordValid = await bcrypt.compare(password, isUser.password);
+//     if (!isPasswordValid) {
+//       return res.status(401).json({ message: "Unauthorized" });
+//     }
 
-    req.user = decoded;
+//     next();
+//   } catch (err) {
+//     console.error("Authentication Error:", err);
+//     return res.status(403).json({ message: "Invalid or expired token." });
+//   }
+// };
 
-    const validation = UserSchema.safeParse(req.body);
-    if (!validation.success) {
-      return res.status(400).json({ message: "Invalid Inputs", errors: validation.error.errors });
-    }
-
-    const { username, password } = validation.data;
-
-    const user = await User.findOne({ username });
-    if (!user) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
-    next();
-  } catch (err) {
-    console.error("Authentication Error:", err);
-    return res.status(403).json({ message: "Invalid or expired token." });
-  }
+module.exports = {
+  authenticateTokens,
 };
-
-module.exports = authenticate;

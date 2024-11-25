@@ -43,34 +43,34 @@ const UserSignup = async (req, res) => {
     });
 
     await user.save();
-    // const token = jwt.sign({ username: user.username, id: user._id }, JWT_SECRET, { expiresIn: "1h" });
-    const tokenObj = { username: user.username, id: user._id };
-    if (!generateAccessToken(tokenObj) || !generateRefreshToken(tokenObj)) {
-      return res.status(500).json({ message: "user is not obj" });
-    }
-    const accessToken = generateAccessToken(tokenObj);
-    const refreshToken = await generateRefreshToken(tokenObj);
 
-    setTokens(res, accessToken, refreshToken);
-
-    return res
-      .status(201)
-      .json({
-        message: "User created successfully",
-        accessToken,
-        refreshToken,
-      });
+    return res.status(201).json({ message: "User created successfully" });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 
+// zod user input schema
+const loginSchema = z.object({
+  username: z.string().min(2, "username is required"),
+  password: z.string().min(6, "Password is required"),
+});
+
 const UserLogin = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const body = req.body;
+    const validation = loginSchema.safeParse(body);
 
+    if (!validation.success) {
+      return res
+        .status(400)
+        .json({ message: "Invalid Inputs", errors: validation.error.errors });
+    }
+
+    const { username, password } = validation.data;
     const user = await User.findOne({ username });
+
     if (!user) {
       return res.status(400).json({ message: "Invalid username or password" });
     }
@@ -79,20 +79,26 @@ const UserLogin = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(400).json({ message: "Invalid username or password" });
     }
-    const tokenObj = { username: user.username, id: user._id };
 
+    // Generate tokens
+    const tokenObj = { id: user._id, username: user.username };
     const accessToken = generateAccessToken(tokenObj);
     const refreshToken = await generateRefreshToken(tokenObj);
+
+    // Save refresh token in the database
+    user.refreshToken = refreshToken;
+    await user.save();
 
     setTokens(res, accessToken, refreshToken);
 
     return res
       .status(200)
-      .json({ message: "Login successful", refreshToken, accessToken });
-  } catch (e) {
-    console.error(e);
+      .json({ message: "Login successful", accessToken, refreshToken });
+  } catch (err) {
+    console.error(err);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
 
 module.exports = { UserSignup, UserLogin };
