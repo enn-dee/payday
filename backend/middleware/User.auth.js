@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { z, string } = require("zod");
+const { z } = require("zod");
 
 const authenticateTokens = (req, res, next) => {
   try {
@@ -12,6 +12,7 @@ const authenticateTokens = (req, res, next) => {
     next();
   } catch (err) {
     console.error("Authentication Error:", err);
+
     return res.status(403).json({ message: "Invalid or expired access token" });
   }
 };

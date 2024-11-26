@@ -3,6 +3,7 @@ const app = express();
 const cors = require("cors");
 const DB = require("./Db");
 const router = require("./routes/User.route");
+const {AccountRouter} = require("./routes/Account.route")
 const dotenv = require("dotenv");
 
 app.use(express.json());
@@ -10,7 +11,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 dotenv.config();
 
+// user routes
 app.use("/api/v1", router);
+
+// account routes
+app.use("/api/v1/", AccountRouter)
 
 app.listen(3000, async () => {
   const db = new DB();
