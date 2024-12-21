@@ -7,16 +7,19 @@ const accountSchema = z.object({
     .min(500, { message: "Minimum balance of 500 credits required." }),
 });
 
-const depositSchema = z.object({
+const depositWithdrawSchema = z.object({
   amount: z.number().min(50, { message: "Enter a valid amount (amount > 50)" }),
 });
+const UserAccount = async (user) => {
+  return await Account.findOne({ userId: user.id });
+};
 
 // ========================================== //
 const checkBalance = async (req, res) => {
   try {
     const user = req.user;
 
-    const userAccount = await Account.findOne({ userId: user.id });
+    const userAccount = await UserAccount(user);
 
     if (!userAccount) {
       return res
@@ -73,7 +76,7 @@ const depositToAccount = async (req, res) => {
   try {
     const user = req.user;
 
-    const validation = depositSchema.safeParse(req.body);
+    const validation = depositWithdrawSchema.safeParse(req.body);
     if (!validation.success) {
       return res.status(400).json({ error: validation.error.errors });
     }
@@ -104,11 +107,46 @@ const depositToAccount = async (req, res) => {
 };
 // ========================================== //
 
-const withdrawFromAccount = async (req, res) => {};
+const withdrawFromAccount = async (req, res) => {
+  try {
+    const user = req.user;
+    const userAccount =await UserAccount(user);
+    if (!userAccount) {
+      return res
+        .status(404)
+        .json({ message: "Account not found, maybe create one." });
+    }
+    const validation = depositWithdrawSchema.safeParse(req.body);
+    if (!validation.success) {
+      return res.status(400).json({ error: validation.error.errors });
+    }
+
+    const { amount } = validation.data;
+    const updatedAccount = await Account.findOneAndUpdate(
+      { userId: user.id },
+      { $inc: { balance: -amount } },
+      { new: true }
+    );
+    if (!updatedAccount) {
+      return res
+        .status(404)
+        .json({ message: "Account not found, deposit failed." });
+    }
+    res.status(200).json({
+      status: "Success",
+      message: "Amount withdraw.",
+      balance: "Availabe balance: " + updatedAccount.balance,
+    });
+  } catch (err) {
+    console.error("Error in withdrawBalance:", err.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 // ========================================== //
 module.exports = {
   checkBalance,
   createAccount,
   depositToAccount,
-  withdrawFromAccount
+  withdrawFromAccount,
+  UserAccount
 };

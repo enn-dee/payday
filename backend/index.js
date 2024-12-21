@@ -3,8 +3,9 @@ const app = express();
 const cors = require("cors");
 const DB = require("./Db");
 const router = require("./routes/User.route");
-const {AccountRouter} = require("./routes/Account.route")
+const { AccountRouter } = require("./routes/Account.route");
 const dotenv = require("dotenv");
+const { TransacRoute } = require("./routes/Transaction.route");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -15,7 +16,10 @@ dotenv.config();
 app.use("/api/v1", router);
 
 // account routes
-app.use("/api/v1/", AccountRouter)
+app.use("/api/v1/", AccountRouter);
+
+// transfer route
+app.use("/api/v1", TransacRoute);
 
 app.listen(3000, async () => {
   const db = new DB();
