@@ -15,6 +15,7 @@ const TransferSchema = z.object({
 //==============================================//
 const Transfer = async (req, res) => {
   const session = await mongoose.startSession();
+  /*If any of query fail, mongo will revert(won't execute*/
   session.startTransaction();
 
   try {
@@ -34,7 +35,7 @@ const Transfer = async (req, res) => {
 
     const { id, amount } = validation.data;
 
-    if (userAccount.balance < amount ) {
+    if (userAccount.balance < amount) {
       return res.status(400).json({
         message: "Insufficient balance to complete the transfer.",
       });
@@ -53,6 +54,7 @@ const Transfer = async (req, res) => {
     recipientAccount.balance += amount;
     await recipientAccount.save({ session });
 
+    // successfull query : finilize db query
     await session.commitTransaction();
 
     res.status(200).json({
@@ -60,6 +62,7 @@ const Transfer = async (req, res) => {
       message: "Amount transferred successfully.",
     });
   } catch (err) {
+    //abort db session
     await session.abortTransaction();
     console.error("Error in Transfer:", err.message);
     res.status(500).json({ error: "Internal server error" });
