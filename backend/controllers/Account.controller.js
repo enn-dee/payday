@@ -38,21 +38,25 @@ const checkBalance = async (req, res) => {
 };
 
 // ========================================== //
-const createAccount = async (req, res) => {
+const createAccount = async (user,balance) => {
   try {
-    const user = req.user;
+    // const user = req.user;
 
     const existingAccount = await Account.findOne({ userId: user.id });
     if (existingAccount) {
-      return res.status(400).json({ message: "You already have an account." });
+      // return res.status(400).json({ message: "You already have an account." });
+      return null;
     }
 
-    const validation = accountSchema.safeParse(req.body);
-    if (!validation.success) {
-      return res.status(400).json({ errors: validation.error.errors });
+    // const validation = accountSchema.safeParse(req.body);
+    // !validation.success
+    if (!balance) {
+      // return res.status(400).json({ errors: validation.error.errors });
+      return null;
+      
     }
 
-    const { balance } = validation.data;
+    // const { balance } = validation.data;
 
     const newAccount = new Account({
       userId: user.id,
@@ -60,14 +64,16 @@ const createAccount = async (req, res) => {
     });
     await newAccount.save();
 
-    res.status(201).json({
-      status: "Success",
-      message: "Account created successfully.",
-      account: { id: newAccount._id, balance: newAccount.balance },
-    });
+    // res.status(201).json({
+    //   status: "Success",
+    //   message: "Account created successfully.",
+    //   account: { id: newAccount._id, balance: newAccount.balance },
+    // });
+    return newAccount;
   } catch (err) {
-    console.error("Error in createAccount:", err.message);
-    res.status(500).json({ error: "Internal server error" });
+    // res.status(500).json({ error: "Internal server error" });
+    console.log("err in create acc: ", err.message)
+    return err;
   }
 };
 
@@ -110,7 +116,7 @@ const depositToAccount = async (req, res) => {
 const withdrawFromAccount = async (req, res) => {
   try {
     const user = req.user;
-    const userAccount =await UserAccount(user);
+    const userAccount = await UserAccount(user);
     if (!userAccount) {
       return res
         .status(404)
@@ -148,5 +154,5 @@ module.exports = {
   createAccount,
   depositToAccount,
   withdrawFromAccount,
-  UserAccount
+  UserAccount,
 };

@@ -10,8 +10,6 @@ const AccountRouter = require("express").Router();
 
 AccountRouter.get("/account/balance", authenticateTokens, checkBalance);
 
-AccountRouter.post("/account/create", authenticateTokens, createAccount);
-
 AccountRouter.post("/account/deposit", authenticateTokens, depositToAccount);
 
 AccountRouter.get("/accound/withdraw", authenticateTokens, withdrawFromAccount);

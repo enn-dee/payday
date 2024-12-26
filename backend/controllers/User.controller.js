@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const { generateAccessToken } = require("../utility/generateAccessToken");
 const { generateRefreshToken } = require("../utility/genRefreshToken");
 const { setTokens } = require("../utility/setToken");
+const { createAccount } = require("./Account.controller");
 
 const SALT_ROUNDS = 10;
 
@@ -35,14 +36,15 @@ const UserSignup = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
-    const user = new User({
+    const user = await new User({
       firstName,
       lastName,
       password: hashedPassword,
       username,
-    });
+    }).save();
 
-    await user.save();
+    //create user - credit account on signup
+   await createAccount(user,600);
 
     return res.status(201).json({ message: "User created successfully" });
   } catch (err) {
