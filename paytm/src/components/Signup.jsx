@@ -11,13 +11,47 @@ function Signup() {
 
   const navigate = useNavigate();
 
+  const onSignup = async (e) => {
+    e.preventDefault();
+    if (!fname || !lname || !password || !username) {
+      toast.error("All fields are required");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:3000/api/v1/user/signup", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: fname,
+          lastName: lname,
+          password: password,
+          username: username,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      toast.success(data.message);
+      navigate("/login");
+      setFname("");
+      setLname("");
+      setPassword("");
+      setUsername("");
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
   return (
     <div className="w-full h-screen bg-slate-700 text-black flex flex-col items-center justify-center ">
       <div className="cotainer bg-slate-50  rounded-md p-2 text-center  sm:w-60 md:w-80 flex flex-col items-center justify-center">
-        <h1 className="font-semibold text-2xl">Sign Up</h1>
+        <h1 className="font-semibold text-2xl underline underline-offset-3">Sign Up</h1>
         <p className="text-slate-500 text-xs">Lorem ipsum dolor sit amet.</p>
 
-        <form className="mt-2 text-slate-700 font-mono">
+        <form className="mt-2 text-slate-700 font-mono" onSubmit={onSignup}>
           <div className="flex flex-col items-start gap-1">
             <label htmlFor="fname">First Name</label>
             <input
@@ -82,43 +116,11 @@ function Signup() {
           {/* submit button */}
           <button
             className="w-full my-2 rounded-lg py-1 bg-black text-white hover:bg-slate-900"
-            onClick={async (e) => {
-              e.preventDefault();
-              if (!fname || !lname || !password || !username) {
-                toast.error("All fields are required");
-                return;
-              }
-              setFname("");
-              setLname("");
-              setPassword("");
-              setUsername("");
-              try {
-                const res = await fetch(
-                  "http://localhost:3000/api/v1/user/signup",
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      firstname: fname,
-                      lastname: lname,
-                      password: password,
-                      username: username,
-                    }),
-                  }
-                );
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.message);
-                console.log(data);
-                toast.success("Signup successful!");
-              } catch (err) {
-                toast.error(err.message);
-              }
-            }}
+            type="submit"
           >
             Sign Up
           </button>
+
           <div className="text-slate-500 text-xs ">
             Already have an account?{" "}
             <button

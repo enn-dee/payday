@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Signup from "./components/Signup";
 import Signin from "./components/Signin";
 import { Toaster } from "react-hot-toast";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Signup />} />
         <Route path="/login" element={<Signin />} />
+        <Route path="/dashboard" element={<Dashboard/>}/>
       </Routes>
     </>
   );
