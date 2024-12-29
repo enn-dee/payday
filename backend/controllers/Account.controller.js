@@ -18,13 +18,12 @@ const UserAccount = async (user) => {
 const checkBalance = async (req, res) => {
   try {
     const user = req.user;
-
     const userAccount = await UserAccount(user);
 
     if (!userAccount) {
       return res
         .status(404)
-        .json({ message: "Account not found, maybe create one." });
+        .json({ message: "No account exists for this user. Please create an account to proceed." });
     }
 
     res.status(200).json({
@@ -38,44 +37,28 @@ const checkBalance = async (req, res) => {
 };
 
 // ========================================== //
-const createAccount = async (user,balance) => {
+const createAccount = async (user, balance) => {
   try {
-    // const user = req.user;
-
     const existingAccount = await Account.findOne({ userId: user.id });
     if (existingAccount) {
-      // return res.status(400).json({ message: "You already have an account." });
-      return null;
+      return null; 
     }
 
-    // const validation = accountSchema.safeParse(req.body);
-    // !validation.success
-    if (!balance) {
-      // return res.status(400).json({ errors: validation.error.errors });
-      return null;
-      
-    }
-
-    // const { balance } = validation.data;
+    const initialBalance = balance || 500; 
 
     const newAccount = new Account({
       userId: user.id,
-      balance,
+      balance: initialBalance,
     });
-    await newAccount.save();
 
-    // res.status(201).json({
-    //   status: "Success",
-    //   message: "Account created successfully.",
-    //   account: { id: newAccount._id, balance: newAccount.balance },
-    // });
+    await newAccount.save();
     return newAccount;
   } catch (err) {
-    // res.status(500).json({ error: "Internal server error" });
-    console.log("err in create acc: ", err.message)
-    return err;
+    console.error("Error in createAccount:", err.message);
+    return null;
   }
 };
+
 
 // ========================================== //
 const depositToAccount = async (req, res) => {
@@ -117,37 +100,43 @@ const withdrawFromAccount = async (req, res) => {
   try {
     const user = req.user;
     const userAccount = await UserAccount(user);
+
     if (!userAccount) {
       return res
         .status(404)
-        .json({ message: "Account not found, maybe create one." });
+        .json({ message: "Account not found, please create an account." });
     }
+
     const validation = depositWithdrawSchema.safeParse(req.body);
     if (!validation.success) {
       return res.status(400).json({ error: validation.error.errors });
     }
 
     const { amount } = validation.data;
+
+    if (userAccount.balance < amount) {
+      return res
+        .status(400)
+        .json({ message: "Insufficient balance for this withdrawal." });
+    }
+
     const updatedAccount = await Account.findOneAndUpdate(
       { userId: user.id },
       { $inc: { balance: -amount } },
       { new: true }
     );
-    if (!updatedAccount) {
-      return res
-        .status(404)
-        .json({ message: "Account not found, deposit failed." });
-    }
+
     res.status(200).json({
       status: "Success",
-      message: "Amount withdraw.",
-      balance: "Availabe balance: " + updatedAccount.balance,
+      message: "Amount withdrawn successfully.",
+      balance: updatedAccount.balance,
     });
   } catch (err) {
-    console.error("Error in withdrawBalance:", err.message);
+    console.error("Error in withdrawFromAccount:", err.message);
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 // ========================================== //
 module.exports = {
   checkBalance,

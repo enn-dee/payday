@@ -4,6 +4,9 @@ import Signup from "./components/Signup";
 import Signin from "./components/Signin";
 import { Toaster } from "react-hot-toast";
 import Dashboard from "./components/Dashboard";
+import Withdraw from "./components/Withdraw";
+import { AuthProvider, ProtectedRoute } from "./context/AuthContext";
+import { BalanceProvider } from "./context/BalanceContext";
 
 function App() {
   return (
@@ -38,11 +41,23 @@ function App() {
           },
         }}
       />
-      <Routes>
-        <Route path="/" element={<Signup />} />
-        <Route path="/login" element={<Signin />} />
-        <Route path="/dashboard" element={<Dashboard/>}/>
-      </Routes>
+      <AuthProvider>
+        <BalanceProvider>
+          <Routes>
+            <Route path="/" element={<Signup />} />
+            <Route path="/login" element={<Signin />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/withdraw" element={<Withdraw />} />
+          </Routes>
+        </BalanceProvider>
+      </AuthProvider>
     </>
   );
 }

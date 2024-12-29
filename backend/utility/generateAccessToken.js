@@ -4,7 +4,7 @@ function generateAccessToken(user) {
     try{
         if (typeof user === "object") {
             return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-                expiresIn: "15m",
+                expiresIn: "20m",
             });
         } else {
             return null;

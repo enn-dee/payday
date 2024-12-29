@@ -5,10 +5,8 @@ const { authenticateTokens } = require("../middleware/User.auth");
 const User = require("../models/User.model");
 const jwt = require("jsonwebtoken");
 
-
 router.post("/user/signup", UserSignup);
 router.post("/user/login", UserLogin);
-
 
 router.post("/token/refresh", async (req, res) => {
   try {
@@ -30,7 +28,7 @@ router.post("/token/refresh", async (req, res) => {
     const accessToken = jwt.sign(
       { userId: user._id, username: user.username },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: "30m" }
     );
 
     res.json({ accessToken });
