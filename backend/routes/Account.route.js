@@ -12,6 +12,6 @@ AccountRouter.get("/account/balance", authenticateTokens, checkBalance);
 
 AccountRouter.post("/account/deposit", authenticateTokens, depositToAccount);
 
-AccountRouter.get("/accound/withdraw", authenticateTokens, withdrawFromAccount);
+AccountRouter.post("/accound/withdraw", authenticateTokens, withdrawFromAccount);
 
 module.exports = { AccountRouter };

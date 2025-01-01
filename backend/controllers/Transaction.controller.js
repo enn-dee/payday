@@ -54,7 +54,6 @@ const Transfer = async (req, res) => {
     recipientAccount.balance += amount;
     await recipientAccount.save({ session });
 
-    // successfull query : finilize db query
     await session.commitTransaction();
 
     res.status(200).json({

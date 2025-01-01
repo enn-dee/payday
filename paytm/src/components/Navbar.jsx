@@ -1,11 +1,16 @@
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import useTokenStore from "../../zustand/AuthZus";
 
 function Navbar() {
+  const { setTokens } = useTokenStore();
+
   const navigate = useNavigate();
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
+    // localStorage.removeItem("refreshToken")
+    // localStorage.removeItem("accessToken");
     navigate("/login");
+    setTokens(null, null);
     toast.success("Logged out successfully");
   };
   return (

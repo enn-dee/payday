@@ -1,38 +1,22 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
 import Navbar from "./Navbar";
 import BalanceCard from "./BalanceCard";
 import toast from "react-hot-toast";
-import { accessState } from "../recoil/authStore";
-import { balanceState } from "../recoil/accountStore";
-
-const fetchBalance = async (accessToken) => {
-  try {
-    const res = await fetch("http://localhost:3000/api/v1/account/balance", {
-      method: "GET",
-      headers: {
-        "Authorization": `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!res.ok) throw new Error("Failed to fetch balance");
-
-    const data = await res.json();
-    return data.balance;
-  } catch (error) {
-    console.error("Error fetching balance:", error);
-    toast.error("Error fetching balance");
-    return null;
-  }
-};
+import { FetchBalance } from "../utility/fetchBalance";
+import BalanceStore from "../../zustand/BalanceZus";
+import useTokenStore from "../../zustand/AuthZus";
 
 function Dashboard() {
   const navigate = useNavigate();
-  const accessToken = useRecoilValue(accessState);
-  const setBalance = useSetRecoilState(balanceState);
-  const userBalance = useRecoilValue(balanceState);
+
+  // Zustand store states
+  const { balance, setBalance } = BalanceStore();
+  const { accessToken } = useTokenStore();
+  
+  // useEffect(() => {
+  //   console.log("Updated balance:", balance);
+  // }, [balance]);
 
   useEffect(() => {
     const loadDashboardData = async () => {
@@ -42,9 +26,16 @@ function Dashboard() {
         return;
       }
 
-      const balance = await fetchBalance(accessToken);
-      if (balance !== null) {
-        setBalance(balance);
+      try {
+        const fetchedbalance = await FetchBalance(accessToken);
+        if (fetchedbalance !== null) {
+          setBalance(fetchedbalance);
+        } else {
+          toast.error("Failed to fetch balance.");
+        }
+      } catch (error) {
+        console.error("Error fetching balance:", error);
+        toast.error("Error fetching balance.");
       }
     };
 
@@ -63,7 +54,7 @@ function Dashboard() {
       <Navbar />
       <main className="container mx-auto px-4 py-6">
         <div className="mb-8">
-          <BalanceCard balance={userBalance !== null ? userBalance : "Fetching..."} />
+          <BalanceCard balance={balance !== null ? balance : "Fetching..."} />
         </div>
         <section>
           <h2 className="text-2xl text-white mb-6 font-semibold">
@@ -74,7 +65,10 @@ function Dashboard() {
               <button
                 key={index}
                 className="bg-blue-500 text-white p-4 rounded-lg hover:bg-blue-600"
-                onClick={() => navigate(action.path)}
+                onClick={() => {
+                  console.log(`Navigating to ${action.path}`);
+                  navigate(action.path);
+                }}
               >
                 {action.title}
               </button>

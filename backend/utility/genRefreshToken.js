@@ -6,7 +6,7 @@ Refresh tokens are meant to obtain new access tokens. They are not designed to a
 const jwt = require("jsonwebtoken");
 const User = require("../models/User.model");
 
- async function generateRefreshToken(user) {
+async function generateRefreshToken(user) {
   if (typeof user !== "object") {
     throw new Error("User is not an object");
   }

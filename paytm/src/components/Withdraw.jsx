@@ -1,45 +1,71 @@
-// import { useBalance } from "../context/BalanceContext";
 import { useState } from "react";
 import Navbar from "./Navbar";
 import BalanceCard from "./BalanceCard";
-import { useRecoilValue } from "recoil";
-import { balanceState } from "../recoil/accountStore";
+import toast from "react-hot-toast";
+import BalanceStore from "../../zustand/BalanceZus";
+// import axios from "axios";
+import useTokenStore from "../../zustand/AuthZus";
 
 function Withdraw() {
-  const balance = useRecoilValue(balanceState)
+  const { balance, setBalance } = BalanceStore();
+  const { accessToken } = useTokenStore();
 
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState("");
 
-  // const { balance, fetchBalance, loading } = useBalance();
+  const handleWithdraw = async () => {
+    const withdrawalAmount = parseFloat(amount);
 
-  // useEffect(() => {
-  //   fetchBalance();
-  // }, [fetchBalance]);
+    // Input validation
+    if (
+      !withdrawalAmount ||
+      withdrawalAmount <= 0 ||
+      withdrawalAmount >= balance
+    ) {
+      toast.error("Enter a valid amount within your balance.");
+      return;
+    }
 
-  const handleWithdraw = () => {
-    setAmount(0);
+    try {
+ 
+      const res = await fetch("http://localhost:3000/api/v1/accound/withdraw", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ amount: withdrawalAmount }),
+      });
+      if (res.status != 200) {
+        throw new Error("Failed to withdraw");
+      }
+
+      setBalance(balance - withdrawalAmount);
+
+      toast.success(`Successfully withdrew: ${withdrawalAmount}`);
+      setAmount("");
+    } catch (error) {
+      console.error("Error occurred during withdrawal:", error.message);
+      toast.error(
+        error.response?.data?.message || "An error occurred during withdrawal."
+      );
+    }
   };
-  // if (loading) {
-  //   return (
-  //     <div className="min-h-screen bg-slate-800 flex items-center justify-center text-white text-2xl">
-  //       Loading...
-  //     </div>
-  //   );
-  // }
+
   return (
     <div className="min-h-screen bg-slate-800">
       <Navbar />
       <BalanceCard balance={balance} />
-      <div className="flex flex-col w-screen  items-center">
+      <div className="flex flex-col w-screen items-center">
         <input
           type="number"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          className="bg-slate-400 outline-none border-none rounded-md  p-2 m-2"
+          placeholder="Enter amount to withdraw"
+          className="bg-slate-400 outline-none border-none rounded-md p-2 m-2"
         />
         <button
           onClick={handleWithdraw}
-          className="bg-green-400 p-2 rounded-md "
+          className="bg-green-400 p-2 rounded-md"
         >
           Withdraw
         </button>

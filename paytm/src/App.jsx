@@ -5,7 +5,7 @@ import Signin from "./components/Signin";
 import { Toaster } from "react-hot-toast";
 import Dashboard from "./components/Dashboard";
 import Withdraw from "./components/Withdraw";
-import { RecoilRoot } from "recoil";
+import Transfer from "./components/TransferMoney/Transfer";
 
 function App() {
   return (
@@ -40,22 +40,13 @@ function App() {
           },
         }}
       />
-     
-      <RecoilRoot>
         <Routes>
           <Route path="/" element={<Signup />} />
           <Route path="/login" element={<Signin />} />
-          <Route
-            path="/dashboard"
-            element={
-             
-              <Dashboard />
-            }
-          />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/withdraw" element={<Withdraw />} />
+          <Route path="/transfer" element={<Transfer />} />
         </Routes>
-      </RecoilRoot>
-     
     </>
   );
 }

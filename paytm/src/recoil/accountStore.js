@@ -1,6 +1,6 @@
 import { atom } from "recoil";
-
+// const balance = localStorage.getItem("balance");
 export const balanceState = atom({
-    key:"balanceAtom",
-    default:0
-})
+  key: "balanceState",
+  default: null,
+});
