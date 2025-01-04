@@ -1,14 +1,14 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
-import Signup from "./components/Signup";
 import { Toaster } from "react-hot-toast";
-import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
-// import "react-toastify/dist/ReactToastify.css";
+import LoadAuth from "./components/LoadAuth";
 
 function App() {
+
   return (
     <div className="w-full h-screen bg-slate-800 grid place-items-center">
+
       <Toaster
         position="top-center"
         reverseOrder={false}
@@ -34,10 +34,7 @@ function App() {
         }}
       />
       <Routes>
-        <Route path="/" element={<Signup />} />
-
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<LoadAuth />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </div>

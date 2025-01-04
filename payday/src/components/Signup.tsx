@@ -1,12 +1,9 @@
 import { FormEvent, useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 const Signup = () => {
- 
-  const navigate = useNavigate();
 
   const [fname, setFname] = useState<string>("");
   const [lname, setLname] = useState<string>("");
@@ -50,7 +47,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="bg-slate-700 rounded-md w-80 max-h-90 p-4 shadow-md font-mono">
+    <div className="">
       <h1 className="text-3xl text-green-500 font-serif text-center underline">
         Signup
       </h1>
@@ -117,10 +114,7 @@ const Signup = () => {
         <button className="bg-green-500 p-1 rounded-md text-slate-100 font-semibold hover:bg-green-600 hover:text-slate-50">
           Signup
         </button>
-        <p className="text-slate-400 font-light">
-          Already have an account?{" "}
-          <span className="text-blue-500 hover:underline" onClick={()=> navigate("/login")}>Login</span>
-        </p>
+       
       </form>
     </div>
   );

@@ -45,7 +45,7 @@ const Login: React.FC = () => {
     }
   };
   return (
-    <div className="bg-slate-700 rounded-md w-80 max-h-90 p-4 shadow-md font-mono">
+    <div className="">
       <h1 className="text-2xl text-green-500 font-serif text-center underline my-4">
         Welcome Back! Login
       </h1>
@@ -83,15 +83,7 @@ const Login: React.FC = () => {
         <button className="bg-green-500 p-1 rounded-md text-slate-100 font-semibold hover:bg-green-600 hover:text-slate-50">
           Login
         </button>
-        <p className="text-slate-400 font-light">
-          Don't have an account?{" "}
-          <span
-            className="text-blue-500 hover:underline"
-            onClick={() => navigate("/signup")}
-          >
-            Signup
-          </span>
-        </p>
+       
       </form>
     </div>
   );
