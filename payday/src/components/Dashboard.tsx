@@ -15,12 +15,16 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchBalanceData = async (token: string) => {
       try {
-        const data = await FetchBalance(token);
-        if (data) {
+        type DataState = number | null;
+        const data: DataState = await FetchBalance(token);
+        if (!data) {
+          throw new Error("Failed to fetch balance data.");
+        } else if (data === 403) {
+          console.log("token expired");
+          // recall refershToken
+        } else {
           setBalance(data);
           toast.success("Balance updated successfully!");
-        } else {
-          throw new Error("Failed to fetch balance data.");
         }
       } catch (error) {
         console.error("Error fetching balance:", error);
