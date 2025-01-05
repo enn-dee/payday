@@ -6,9 +6,10 @@ import toast from "react-hot-toast";
 import FetchBalance from "../utility/FetchBalance";
 import BalanceStore from "../zustand/BalanceStore";
 import Navbar from "./Navbar";
+import RefreshToken from "../utility/RefreshToken";
 
 const Dashboard = () => {
-  const { accessToken } = AuthStore();
+  const { accessToken, refreshToken, removeTokens } = AuthStore();
   const { setBalance } = BalanceStore();
   const navigate = useNavigate();
 
@@ -20,8 +21,8 @@ const Dashboard = () => {
         if (!data) {
           throw new Error("Failed to fetch balance data.");
         } else if (data === 403) {
-          console.log("token expired");
           // recall refershToken
+          await RefreshToken(refreshToken);
         } else {
           setBalance(data);
           toast.success("Balance updated successfully!");
@@ -29,6 +30,8 @@ const Dashboard = () => {
       } catch (error) {
         console.error("Error fetching balance:", error);
         toast.error("Error fetching balance. Please try again.");
+        removeTokens();
+        navigate("/");
       }
     };
 

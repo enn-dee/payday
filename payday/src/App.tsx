@@ -3,12 +3,11 @@ import { Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Dashboard from "./components/Dashboard";
 import LoadAuth from "./components/LoadAuth";
+import Withdraw from "./components/Withdraw";
 
 function App() {
-
   return (
     <div className="w-full h-screen bg-slate-800 grid place-items-center">
-
       <Toaster
         position="top-center"
         reverseOrder={false}
@@ -36,6 +35,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LoadAuth />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/withdraw" element={<Withdraw />} />
       </Routes>
     </div>
   );
