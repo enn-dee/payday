@@ -25,7 +25,7 @@ const Dashboard = () => {
           await RefreshToken(refreshToken);
         } else {
           setBalance(data);
-          toast.success("Balance updated successfully!");
+          // toast.success("Balance updated successfully!");
         }
       } catch (error) {
         console.error("Error fetching balance:", error);
@@ -45,7 +45,7 @@ const Dashboard = () => {
   }, [accessToken, setBalance]);
 
   const QuickActions = [
-    { name: "Check Balance", path: "checkbalance" },
+    { name: "Transfer", path: "transfer" },
     { name: "Deposit", path: "deposit" },
     { name: "Withdraw", path: "withdraw" },
   ];

@@ -31,7 +31,7 @@ const Login: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         addAccessToken(data.accessToken);
-        addRefreshToken(data.token);
+        addRefreshToken(data.refreshToken);
         // console.log("Data- token ", data.accessToken);
         toast.success(`Logged In`);
         navigate("/dashboard");

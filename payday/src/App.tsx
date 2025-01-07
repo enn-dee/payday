@@ -4,6 +4,8 @@ import { Toaster } from "react-hot-toast";
 import Dashboard from "./components/Dashboard";
 import LoadAuth from "./components/LoadAuth";
 import Withdraw from "./components/Withdraw";
+import Deposit from "./components/Deposit";
+import Transfer from "./components/Transfer";
 
 function App() {
   return (
@@ -36,6 +38,8 @@ function App() {
         <Route path="/" element={<LoadAuth />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/withdraw" element={<Withdraw />} />
+        <Route path="/deposit" element={<Deposit />} />
+        <Route path="/transfer" element={<Transfer/>} />
       </Routes>
     </div>
   );
