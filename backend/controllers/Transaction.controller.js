@@ -41,13 +41,17 @@ const Transfer = async (req, res) => {
       });
     }
 
-    const recipientAccount = await Account.findOne({ userId: id }).session(
-      session
-    );
-    if (!recipientAccount || id == userAccount.userId) {
+    const recipientAccount = await Account.findOne({
+      userId: new mongoose.Types.ObjectId(id),
+    }).session(session);
+    if (!recipientAccount) {
       return res.status(404).json({ message: "Recipient account not found." });
     }
-
+    if (id == userAccount.userId) {
+      return res
+        .status(404)
+        .json({ message: "Can't transfer to your own account." });
+    }
     userAccount.balance -= amount;
     await userAccount.save({ session });
 
