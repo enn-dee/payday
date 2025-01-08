@@ -17,7 +17,7 @@ const AccountSchema = new Schema(
 );
 
 AccountSchema.pre("save", function (next) {
-  if (this.balance < 500) {
+  if (this.balance < 400) {
     const err = new Error("Minimum of 500 balance required");
     return next(err);
   }
