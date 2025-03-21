@@ -33,16 +33,16 @@ const Signup = () => {
 
       if (response.ok) {
         const result = await response.json();
-        console.log("REsult: ", result);
+        // console.log("REsult: ", result);
         toast.success("Signup successful!");
-        console.log("Signup Result:", result);
+        // console.log("Signup Result:", result);
       } else {
         const error = await response.json();
         toast.error(`Signup failed: ${error.message}`);
       }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
-      console.error("Signup Error:", error);
+      // console.error("Signup Error:", error);
     }
   };
 

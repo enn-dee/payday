@@ -19,11 +19,11 @@ const RefreshToken = async (token: TokenState) => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log("Successfully refreshed token:", data);
+      // console.log("Successfully refreshed token:", data);
       return data; 
     } else {
       const data = await response.json();
-      console.error("Error refreshing token:", data);
+      // console.error("Error refreshing token:", data);
     }
   } catch (error) {
     console.error("Error occurred during token refresh:", error);

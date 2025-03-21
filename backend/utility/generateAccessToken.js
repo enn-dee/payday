@@ -10,7 +10,7 @@ function generateAccessToken(user) {
             return null;
         }
     }catch(error){
-        console.log("Error in generateAccessToken", error);
+        // console.log("Error in generateAccessToken", error);
         return null;
     }
 }

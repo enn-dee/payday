@@ -40,7 +40,7 @@ const Login: React.FC = () => {
         throw new Error(err.message);
       }
     } catch (error) {
-      console.log("Error in login component: ", error);
+      // console.log("Error in login component: ", error);
       toast.error(`${error}`);
     }
   };

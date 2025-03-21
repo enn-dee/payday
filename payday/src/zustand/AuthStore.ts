@@ -31,9 +31,9 @@ const AuthStore = create<UserState>()(
 
       onRehydrateStorage: (state) => {
         if (state) {
-          console.log("Rehydrating state:", state);
+          // console.log("Rehydrating state:", state);
         } else {
-          console.warn("No state found to rehydrate.");
+          // console.warn("No state found to rehydrate.");
         }
       },
     }

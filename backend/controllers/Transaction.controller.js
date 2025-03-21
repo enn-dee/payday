@@ -2,6 +2,7 @@ const { z } = require("zod");
 const { UserAccount } = require("./Account.controller");
 const Account = require("../models/Account.model");
 const mongoose = require("mongoose");
+const User = require("../models/User.model");
 
 const TransferSchema = z.object({
   id: z.string().nonempty({ message: "Recipient ID is required." }),
@@ -12,7 +13,28 @@ const TransferSchema = z.object({
       message: "Enter a valid amount (amount >= 50)",
     }),
 });
+
 //==============================================//
+
+const getAllAccounts = async (req, res) => {
+  try {
+    const loggedInUserId = req.user.id; 
+
+    const accounts = await Account.find(
+      { userId: { $ne: loggedInUserId } }, 
+      { __v: 0 } 
+    ).populate("userId", "firstName lastName"); 
+
+    res.status(200).json(accounts);
+  } catch (err) {
+    console.error("Error in getAllAccount:", err.stack);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+//==============================================//
+
 const Transfer = async (req, res) => {
   const session = await mongoose.startSession();
   /*If any of query fail, mongo will revert(won't execute*/
@@ -76,4 +98,5 @@ const Transfer = async (req, res) => {
 
 module.exports = {
   Transfer,
+  getAllAccounts,
 };

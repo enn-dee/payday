@@ -43,10 +43,10 @@ const Deposit: React.FC = () => {
 
         toast.success(`Deposited: ${depositAmount}`);
         setBalance(balance + depositAmount);
-        console.log("data: ", data);
+        // console.log("data: ", data);
       }
     } catch (error: unknown) {
-      console.log("Error in deposite: ", error);
+      // console.log("Error in deposite: ", error);
     }
   };
   return (

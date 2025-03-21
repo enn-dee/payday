@@ -20,9 +20,9 @@ async function generateRefreshToken(user) {
       { $set: { refreshToken: refreshToken } },
       { new: true }
     );
-    console.log("Refresh token saved successfully");
+    // console.log("Refresh token saved successfully");
   } catch (error) {
-    console.error("Error saving refresh token:", error);
+    // console.error("Error saving refresh token:", error);
     throw new Error("Failed to save refresh token");
   }
   return refreshToken;

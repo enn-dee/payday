@@ -47,7 +47,7 @@ const Withdraw: React.FC = () => {
       }
       return;
     } catch (error) {
-      console.log("error in withdraw ", error);
+      // console.log("error in withdraw ", error);
     }
   };
   return (

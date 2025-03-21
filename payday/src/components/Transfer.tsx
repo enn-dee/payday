@@ -45,13 +45,13 @@ const Transfer = () => {
       } else {
         const data = await response.json();
         toast.success(`Deposited: ${depositAmount}`);
-        console.log("data: ", data);
+        // console.log("data: ", data);
         setBalance(balance - depositAmount);
 
         return;
       }
     } catch (error) {
-      console.log("Error in transfer compo: ", error);
+      // console.log("Error in transfer compo: ", error);
       toast.error(error.message);
     } finally {
       setAmount(0);

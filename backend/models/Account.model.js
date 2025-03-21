@@ -21,7 +21,7 @@ AccountSchema.pre("save", function (next) {
     const err = new Error("Minimum of 500 balance required");
     return next(err);
   }
-  console.log("Account info saved");
+  // console.log("Account info saved");
   next();
 });
 
